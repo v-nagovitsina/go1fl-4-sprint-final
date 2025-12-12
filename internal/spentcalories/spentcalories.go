@@ -20,7 +20,7 @@ const (
 func parseTraining(data string) (int, string, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 3 {
-		return 0, "", 0, &strconv.NumError{Func: "parseTraining", Num: data, Err: strconv.ErrSyntax}
+		return 0, "", 0, fmt.Errorf("неверный формат данных: ожидается 'шаги,вид активности,продолжительность'")
 	}
 
 	stepsStr := parts[0]
@@ -29,7 +29,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, err
 	}
 	if steps <= 0 {
-		return 0, "", 0, &strconv.NumError{Func: "parseTraining", Num: stepsStr, Err: strconv.ErrRange}
+		return 0, "", 0, fmt.Errorf("количество шагов должно быть положительным, получено %s", stepsStr)
 	}
 
 	activity := parts[1]
@@ -40,7 +40,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, err
 	}
 	if duration <= 0 {
-		return 0, "", 0, &strconv.NumError{Func: "parseTraining", Num: durationStr, Err: strconv.ErrRange}
+		return 0, "", 0, fmt.Errorf("продолжительность должна быть положительной, получено %s", durationStr)
 	}
 
 	return steps, activity, duration, nil
@@ -65,8 +65,17 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("некорректные параметры")
+	if steps <= 0 {
+		return 0, fmt.Errorf("количество шагов должно быть положительным")
+	}
+	if weight <= 0 {
+		return 0, fmt.Errorf("вес должен быть положительным")
+	}
+	if height <= 0 {
+		return 0, fmt.Errorf("рост должен быть положительным")
+	}
+	if duration <= 0 {
+		return 0, fmt.Errorf("продолжительность должна быть положительной")
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMinutes := duration.Minutes()
@@ -75,8 +84,17 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("некорректные параметры")
+	if steps <= 0 {
+		return 0, fmt.Errorf("количество шагов должно быть положительным")
+	}
+	if weight <= 0 {
+		return 0, fmt.Errorf("вес должен быть положительным")
+	}
+	if height <= 0 {
+		return 0, fmt.Errorf("рост должен быть положительным")
+	}
+	if duration <= 0 {
+		return 0, fmt.Errorf("продолжительность должна быть положительной")
 	}
 	speed := meanSpeed(steps, height, duration)
 	durationMinutes := duration.Minutes()

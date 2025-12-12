@@ -20,7 +20,7 @@ const (
 func parsePackage(data string) (int, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 2 {
-		return 0, 0, &strconv.NumError{Func: "parsePackage", Num: data, Err: strconv.ErrSyntax}
+		return 0, 0, fmt.Errorf("неверный формат данных: ожидается 'шаги,продолжительность'")
 	}
 
 	stepsStr := parts[0]
@@ -29,7 +29,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, err
 	}
 	if steps <= 0 {
-		return 0, 0, &strconv.NumError{Func: "parsePackage", Num: stepsStr, Err: strconv.ErrRange}
+		return 0, 0, fmt.Errorf("количество шагов должно быть положительным, получено %s", stepsStr)
 	}
 
 	durationStr := parts[1]
@@ -38,7 +38,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, err
 	}
 	if duration <= 0 {
-		return 0, 0, &strconv.NumError{Func: "parsePackage", Num: durationStr, Err: strconv.ErrRange}
+		return 0, 0, fmt.Errorf("продолжительность должна быть положительной, получено %s", durationStr)
 	}
 
 	return steps, duration, nil
